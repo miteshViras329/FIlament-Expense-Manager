@@ -26,24 +26,28 @@ class UserResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $hasUser = $form->model;
+        if($hasUser == User::class){
+            $hasUser = null;
+        }
+
         return $form
             ->schema([
-                Fieldset::make('Label')->schema([
+                Fieldset::make('')->schema([
                     Section::make([
                         FileUpload::make('profile_picture')->required()->image()->imageEditor(),
 
-                    ]),
+                    ])->columns(1),
                     Section::make([
                         TextInput::make('name')->required(),
-                        TextInput::make('email')->email()->required()->unique(),
+                        TextInput::make('email')->email()->required()->unique(ignorable: $hasUser),
                         TextInput::make('password')->password()->required()->hiddenOn('edit'),
-                    ]),
+                    ])->columns(2),
                     Section::make([
                         Toggle::make('is_admin')->label('Is Admin'),
                         Toggle::make('is_active')->label('Active')->default(true)->required(),
                     ]),
-                ])->columns(3),
-
+                ])->columns(2),
             ]);
     }
 
